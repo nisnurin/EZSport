@@ -1,117 +1,119 @@
 const express = require("express");
-
 const { Bookingmodel } = require("../models/bookingModel");
-
-const { authenticate } = require("../middlewares/authenticateMiddleware")
+const { authenticate } = require("../middlewares/authenticateMiddleware");
 
 const bookingRoutes = express.Router();
-const nodemailer = require("nodemailer")
-require("dotenv").config()
+const nodemailer = require("nodemailer");
+require("dotenv").config();
 
-bookingRoutes.get("/", async (req, res) => {//getting all booking data
+// Getting all booking data
+bookingRoutes.get("/", async (req, res) => {
     try {
         const reqData = await Bookingmodel.find();
-        res.json({ msg: "All booking data", bookingData: reqData })
+        res.json({ msg: "All booking data", bookingData: reqData });
     } catch (error) {
-        console.log("error from getting all booking data", error.message);
-        res.json({ msg: "error in getting all booking data", errorMsg: error.message })
+        console.log("Error getting all booking data:", error.message);
+        res.json({ msg: "Error in getting all booking data", errorMsg: error.message });
     }
-})
+});
 
-bookingRoutes.get("/userId", authenticate,async (req, res) => {//getting paticular user booking data
+// Getting particular user booking data
+bookingRoutes.get("/userId", authenticate, async (req, res) => {
     let userId = req.body.userId;
     try {
         const reqData = await Bookingmodel.find({ userId });
-        res.json({ msg: `All booking data of userId ${userId}`, Data: reqData })
+        res.json({ msg: `All booking data of userId ${userId}`, Data: reqData });
     } catch (error) {
-        console.log("error from getting paticular user booking data", error.message);
-        res.json({ msg: "error in getting paticular user booking data", errorMsg: error.message })
+        console.log("Error getting user booking data:", error.message);
+        res.json({ msg: "Error in getting user booking data", errorMsg: error.message });
     }
-})
+});
 
-bookingRoutes.get("/:trainerId", async (req, res) => {//getting paticular trainer booking data
-    let trainerId = req.params.trainerId;
+// Getting particular equipment booking data (Changed from trainerId)
+bookingRoutes.get("/:equipmentId", async (req, res) => {
+    let equipmentId = req.params.equipmentId;
     try {
-        const reqData = await Bookingmodel.find({ trainerId });
-        res.json({ msg: `All booking data of trainerId ${trainerId}`, Data: reqData })
+        const reqData = await Bookingmodel.find({ equipmentId });
+        res.json({ msg: `All booking data of equipmentId ${equipmentId}`, Data: reqData });
     } catch (error) {
-        console.log("error from getting paticular trainer booking data", error.message);
-        res.json({ msg: "error in getting paticular trainer booking data", errorMsg: error.message })
+        console.log("Error getting equipment booking data:", error.message);
+        res.json({ msg: "Error in getting equipment booking data", errorMsg: error.message });
     }
-})
+});
 
-bookingRoutes.post("/create", authenticate, async (req, res) => {//create new booking
+// Create new equipment booking
+bookingRoutes.post("/create", authenticate, async (req, res) => {
     const data = req.body;
     try {
-        let allBookings = await Bookingmodel.find({ trainerId: data.trainerId })
-        if (allBookings.length === 0) {
-            const addData = new Bookingmodel(data);
-            await addData.save();
-        } else {
-            for (let i = 0; i < allBookings.length; i++) {
-                if (allBookings[i].bookingDate === data.bookingDate) {
-                    if (allBookings[i].bookingSlot === data.bookingSlot) {
-                        res.json({ "msg": "This Slot is Not Available." })
-                        return
-                    }
+        // English Comment: Check slot availability based on equipmentId instead of trainerId
+        let allBookings = await Bookingmodel.find({ equipmentId: data.equipmentId });
+        
+        for (let i = 0; i < allBookings.length; i++) {
+            if (allBookings[i].bookingDate === data.bookingDate) {
+                if (allBookings[i].bookingSlot === data.bookingSlot) {
+                    res.json({ "msg": "This Slot is Not Available for this equipment." });
+                    return;
                 }
             }
-            const addData = new Bookingmodel(data);
-            await addData.save();
         }
+        
+        const addData = new Bookingmodel(data);
+        await addData.save();
+
+        // Email Notification System Setup
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: 'ajitkhatua286@gmail.com',
+                user: process.env.emailUser || 'ajitkhatua286@gmail.com', // Best practice to use env
                 pass: process.env.emailpassword
             }
         });
+
         const mailOptions = {
-            from: 'ajitkhatua286@gmail.com',
+            from: process.env.emailUser || 'ajitkhatua286@gmail.com',
             to: `${data.userEmail}`,
-            subject: 'Booking Confirmation from Rapid fit',
-            text: `Your Booking is confirmed on ${data.bookingDate} date at ${data.bookingSlot} slot.`
+            subject: 'Booking Confirmation from EZSport System', // Changed from Rapid Fit to EZSport
+            text: `Hi student, your equipment booking is confirmed for ${data.bookingDate} during the ${data.bookingSlot} slot. Thank you for using EZSport!`
         };
+
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.log(error);
-                return res.status(500).json({ message: 'Error while sending conformation mail' });
+                return res.status(500).json({ message: 'Error while sending confirmation email' });
             } else {
-                // res.json({ msg: "new booking created successfully" })
-                return res.status(200).json({ message: 'Confiramtion sent to email', msg: "new booking created successfully" });
+                return res.status(200).json({ message: 'Confirmation sent to email', msg: "New booking created successfully" });
             }
         });
 
     } catch (error) {
-        console.log("error from adding new booking data", error.message);
-        res.json({ msg: "error in adding new booking data", errorMsg: error.message })
+        console.log("Error adding new booking data:", error.message);
+        res.json({ msg: "Error in adding new booking data", errorMsg: error.message });
     }
-})
+});
 
-bookingRoutes.patch("/edit/:id", async (req, res) => {//edit the booking data
-    const ID = req.params.id
+// Edit booking data
+bookingRoutes.patch("/edit/:id", async (req, res) => {
+    const ID = req.params.id;
     const data = req.body;
     try {
         await Bookingmodel.findByIdAndUpdate({ _id: ID }, data);
-        res.json({ msg: `booking id of ${ID} is updated succesfully` })
+        res.json({ msg: `Booking ID ${ID} updated successfully` });
     } catch (error) {
-        console.log("error from editing booking data", error.message);
-        res.json({ msg: "error in edit of booking data", errorMsg: error.message })
+        console.log("Error editing booking data:", error.message);
+        res.json({ msg: "Error updating booking data", errorMsg: error.message });
     }
-})
+});
 
-bookingRoutes.delete("/remove/:id", authenticate,async (req, res) => {//removing the booking data
-    const ID = req.params.id
-    //console.log(ID);
+// Removing booking data
+bookingRoutes.delete("/remove/:id", authenticate, async (req, res) => {
+    const ID = req.params.id;
     try {
         await Bookingmodel.findByIdAndDelete({ _id: ID });
-        res.json({ msg: `booking id of ${ID} is deleted succesfully` })
+        res.json({ msg: `Booking ID ${ID} deleted successfully` });
     } catch (error) {
-        console.log("error from deleting booking data", error.message);
-        res.json({ msg: "error in deleting of booking data", errorMsg: error.message })
+        console.log("Error deleting booking data:", error.message);
+        res.json({ msg: "Error deleting booking data", errorMsg: error.message });
     }
-})
+});
 
-module.exports = {
-    bookingRoutes
-}
+module.exports = { bookingRoutes };

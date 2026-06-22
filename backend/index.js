@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { connection } = require("./config/db");
-const { trainerRouter } = require("./Routes/trainer.route");
+const { equipmentRouter } = require("./Routes/equipment.route"); // Changed from trainer
 const { bookingRoutes } = require("./Routes/bookingRoutes");
 const { signupRoute } = require("./Routes/signupRoute");
 
@@ -20,10 +20,10 @@ app.use(express.json());
 
 /**
  * API Routes Definition
- * English Comment: Mounting different routers to handle authentication, trainer/services, and booking actions.
+ * English Comment: Mounting routers to handle authentication, equipment inventory, and booking actions.
  */
 app.use("/user", signupRoute);
-app.use("/trainer", trainerRouter);
+app.use("/equipment", equipmentRouter); // Changed from /trainer to /equipment
 app.use("/booking", bookingRoutes);
 
 // Define a safe fallback port if process.env.port is not reading correctly
@@ -41,6 +41,5 @@ app.listen(PORT, async () => {
     } catch (error) {
         console.error("Critical Error: Failed to connect to the database on startup.", error);
     }
-    // Explicitly logging the fallback port to prevent "undefined" terminal printouts
     console.log(`Server is running at http://localhost:${PORT}`);
 });

@@ -1,19 +1,18 @@
-const mongoose=require("mongoose");
+const mongoose = require("mongoose");
 
-const signupSchema=mongoose.Schema({
-    name:{type:String,require:true},
-    email:{type:String,require:true},
-    // mobileNo:{type:String,require:true},
-    password:{type:String,require:true},
-})
+/**
+ * Student Registration Schema
+ * English Comment: Blueprint for storing student credentials, including the mandatory Student ID/Matrix Card.
+ */
+const signupSchema = mongoose.Schema({
+    name: { type: String, required: true },
+    studentID: { type: String, required: true, unique: true }, // Unique identifier for each student
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true }
+}, {
+    versionKey: false
+});
 
-const Signupmodel=mongoose.model("user",signupSchema);
+const Signupmodel = mongoose.model("user", signupSchema);
 
-module.exports={
-    Signupmodel
-}
-
-// "name":"ajit",
-//     "email":"ajit@gmail.com",
-//     "mobileNo":"340957358",
-//     "password":""
+module.exports = { Signupmodel };

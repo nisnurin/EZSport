@@ -1,0 +1,179 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght=300;400;500;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Ubuntu', sans-serif;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+    
+    background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('../wallpaper.jpg');
+    background-size: cover;
+    background-position: center;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 420px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 2.5rem 2rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Logo & EZSport  */
+.container-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #fff;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.logo-placeholder {
+    font-size: 2rem;
+    margin-bottom: 0.2rem;
+}
+
+.login-wrap,
+.signup-wrap {
+    width: 100%;
+    display: none;
+    flex-direction: column;
+}
+
+.login-wrap.active,
+.signup-wrap.active {
+    display: flex;
+}
+
+
+.role-toggle-container {
+    display: flex;
+    background: #4a5db2;
+    border-radius: 0.6rem;
+    padding: 0.25rem;
+    margin-bottom: 1.5rem;
+    width: 100%;
+}
+
+.role-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 0.6rem 0;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 0.4rem;
+    transition: all 0.2s ease;
+}
+
+.role-btn.selected {
+    background: #5651e5;
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+form {
+    width: 100%;
+}
+
+/* Kotak Input Flat Style */
+.input-area {
+    position: relative;
+    margin-top: 1.2rem;
+    width: 100%;
+}
+
+.input-area input {
+    width: 100%;
+    height: 3.2rem;
+    color: #333;
+    font-size: 1.05rem;
+    border: none;
+    border-radius: 0.5rem;
+    outline: none;
+    background: #ffffff;
+    padding: 0 1.2rem;
+}
+
+.input-area label {
+    position: absolute;
+    left: 1.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+
+
+.input-area input:focus ~ label,
+.input-area input:not(:placeholder-shown) ~ label {
+    display: none;
+}
+
+.button-area {
+    margin-top: 1.5rem;
+    width: 100%;
+}
+
+button[type="submit"] {
+    width: 100%;
+    height: 3.2rem;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    background: #5651e5;
+    box-shadow: 0 4px 12px rgba(86, 81, 229, 0.3);
+    transition: all 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background: #4169e1;
+}
+
+.form-toggle-area {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.form-toggle-area p {
+    color: #ddd;
+    font-size: 0.9rem;
+}
+
+.form-toggle-area p span {
+    color: #61dafb;
+    font-weight: 500;
+    cursor: pointer;
+    margin-left: 0.3rem;
+    text-decoration: underline;
+}

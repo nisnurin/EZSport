@@ -1,0 +1,45 @@
+const express = require("express");
+const cors = require("cors");
+const { connection } = require("./config/db");
+const { trainerRouter } = require("./Routes/trainer.route");
+const { bookingRoutes } = require("./Routes/bookingRoutes");
+const { signupRoute } = require("./Routes/signupRoute");
+
+// Initialize environment variables configuration
+require("dotenv").config();
+
+const app = express();
+
+// Enable Cross-Origin Resource Sharing (CORS) for all origins
+app.use(cors({
+    origin: "*"
+}));
+
+// Middleware to parse incoming JSON requests
+app.use(express.json());
+
+/**
+ * API Routes Definition
+ * English Comment: Mounting different routers to handle authentication, trainer/services, and booking actions.
+ */
+app.use("/user", signupRoute);
+app.use("/trainer", trainerRouter);
+app.use("/booking", bookingRoutes);
+
+// Define standard fallback port if process.env.port is undefined
+const PORT = process.env.port || 5000;
+
+/**
+ * Start the Express Application Server
+ * English Comment: Binds and listens for connections on the specified host and port.
+ */
+app.listen(PORT, async () => {
+    try {
+        // Resolve the connection promise before confirming server readiness
+        await connection;
+        console.log("Connected to DB successfully.");
+    } catch (error) {
+        console.error("Critical Error: Failed to connect to the database on startup.", error);
+    }
+    console.log(`Server is running at http://localhost:${PORT}`);
+});

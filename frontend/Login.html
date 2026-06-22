@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/Login.css">
+    <title>EZSport - Authentication</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="container-title">
+            <div class="logo-placeholder">⚽</div>
+            <span>EZSport</span>
+        </div>
+        
+        <div class="login-wrap active">
+            <div class="role-toggle-container">
+                <button type="button" class="role-btn selected" onclick="setRole('login', 'admin')">Admin</button>
+                <button type="button" class="role-btn" onclick="setRole('login', 'user')">User</button>
+            </div>
+
+            <form action="#">
+                <div class="input-area">
+                    <input type="email" id="email" placeholder=" " autocomplete="off" required>
+                    <label for="email">Student Id / Email</label>
+                </div>
+
+                <div class="input-area">
+                    <input type="password" id="password" placeholder=" " required>
+                    <label for="password">Password</label>
+                </div>
+
+                <div class="button-area">
+                    <button type="submit" class="login-btn">Sign Up</button>
+                </div>
+            </form>
+
+            <div class="form-toggle-area">
+                <p>Don't have an account? <span id="toggle-signup">Register Now</span></p>
+            </div>
+        </div>
+
+        <div class="signup-wrap">
+            <div class="role-toggle-container">
+                <button type="button" class="role-btn selected" onclick="setRole('signup', 'admin')">Admin</button>
+                <button type="button" class="role-btn" onclick="setRole('signup', 'user')">User</button>
+            </div>
+
+            <form action="#">
+                <div class="input-area">
+                    <input type="text" id="name" placeholder=" " autocomplete="off" required>
+                    <label for="name">Full Name</label>
+                </div>
+
+                <div class="input-area">
+                    <input type="tel" id="phone" placeholder=" " autocomplete="off" required>
+                    <label for="phone">Phone Number</label>
+                </div>
+
+                <div class="input-area">
+                    <input type="text" id="role-id" placeholder=" " autocomplete="off" required>
+                    <label id="id-label" for="role-id">Staff Id</label>
+                </div>
+
+                <div class="input-area">
+                    <input type="email" id="signup-email" placeholder=" " autocomplete="off" required>
+                    <label for="signup-email">Email</label>
+                </div>
+
+                <div class="input-area">
+                    <input type="password" id="signup-password" placeholder=" " required>
+                    <label for="signup-password">Password</label>
+                </div>
+
+                <div class="button-area">
+                    <button type="submit" class="signup-btn">Sign Up</button>
+                </div>
+            </form>
+
+            <div class="form-toggle-area">
+                <p>Have an account? <span id="toggle-login">Log In to Existing Account</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentLoginRole = 'admin';
+        let currentSignupRole = 'admin';
+
+        function setRole(formType, role) {
+            const containerSelector = formType === 'login' ? '.login-wrap' : '.signup-wrap';
+            const buttons = document.querySelectorAll(`${containerSelector} .role-btn`);
+            
+            buttons.forEach(btn => btn.classList.remove('selected'));
+            
+            if (role === 'admin') {
+                buttons[0].classList.add('selected');
+                if (formType === 'signup') {
+                    document.getElementById('id-label').innerText = 'Staff Id';
+                }
+            } else {
+                buttons[1].classList.add('selected');
+                if (formType === 'signup') {
+                    document.getElementById('id-label').innerText = 'Student Id';
+                }
+            }
+
+            if (formType === 'login') currentLoginRole = role;
+            if (formType === 'signup') currentSignupRole = role;
+        }
+    </script>
+    <script src="script/Login.js"></script>
+</body>
+
+</html>
